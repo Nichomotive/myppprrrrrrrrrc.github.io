@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Fruit and Vegetable Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #35424a;
+            color: #ffffff;
+            padding: 10px 0;
+            border-bottom: #e8491d 3px solid;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        #branding {
+            float: left;
+        }
+
+        #branding h1 {
+            margin: 0;
+        }
+
+        nav {
+            float: right;
+            margin-top: 10px;
+        }
+
+        nav ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-left: 5px;
+        }
+
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 20px;
+            border-radius: 5px;
+        }
+
+        nav ul li a:hover {
+            background-color: #e8491d;
+        }
+
+        .showcase {
+            min-height: 400px;
+            background: url('showcase.jpg') no-repeat center center;
+            background-size: cover;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .showcase h1 {
+            margin-top: 100px;
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+
+        .showcase p {
+            font-size: 20px;
+        }
+
+        .container .products, .container .videos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .product, .video {
+            background: #ffffff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: #cccccc 1px solid;
+            border-radius: 5px;
+            flex-basis: 30%;
+            text-align: center;
+        }
+
+        .product img, .video img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .product .status, .video .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            color: #ffffff;
+        }
+
+        .status.in-stock {
+            background-color: blue;
+        }
+
+        .status.out-of-stock {
+            background-color: red;
+        }
+
+        footer {
+            background-color: #35424a;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 20px;
+        }
+
+        button.product-upload, button.video-upload, button.capture-image {
+            background-color: #35424a;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button.product-upload:active, button.video-upload:active, button.capture-image:active {
+            background-color: #e8491d;
+            transform: translateY(2px);
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 5px;
+            margin-top: 10px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #cccccc;
+            text-align: center;
+        }
+
+        .quantity-input {
+            width: 100%;
+        }
+
+        #camera-container {
+            margin-top: 20px;
+        }
+
+        #camera {
+            display: none;
+            width: 100%;
+        }
+
+        #capture-image {
+            display: block;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+            }
+
+            .product, .video {
+                flex-basis: 100%;
+            }
+
+            .showcase h1 {
+                font-size: 40px;
+            }
+
+            .showcase p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div id="branding">
+            <h1>Fruit & Veggie Store</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="showSection('product-page')">Home</a></li>
+                <li><a href="#" onclick="showSection('seller-page')">Seller</a></li>
+                <li><a href="#" onclick="showSection('order-page')">Orders</a></li>
+                <li><a href="#" onclick="showSection('video-page')">Videos</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section class="showcase">
+    <div class="container">
+        <h1>Welcome to Our Store</h1>
+        <p>Fresh Fruits and Vegetables Delivered to Your Doorstep</p>
+    </div>
+</section>
+
+<!-- Product Page -->
+<section id="product-page" class="container">
+    <h2>Products</h2>
+    <div id="products" class="products">
+        <!-- Dynamically added products will go here -->
+    </div>
+</section>
+
+<!-- Seller Page -->
+<section id="seller-page" class="container hidden">
+    <h2>Seller Upload Page</h2>
+    <form id="upload-form" onsubmit="addProduct(event)">
+        <label for="product-name">Product Name:</label><br>
+        <input type="text" id="product-name" required><br>
+
+        <label for="product-price">Product Price:</label><br>
+        <input type="number" id="product-price" required><br>
+
+        <label for="product-quantity">Product Quantity:</label><br>
+        <input type="number" id="product-quantity" required><br>
+
+        <label for="product-image">Product Image:</label><br>
+        <input type="file" id="product-image" accept="image/*" required><br>
+
+        <button type="submit" class="product-upload">Upload Product</button>
+        <p id="product-upload-status" class="status-message"></p>
+    </form>
+
+    <div id="camera-container">
+        <h3>Capture Product Image</h3>
+        <button class="capture-image" onclick="startCamera()">Capture Image</button>
+        <video id="camera" autoplay></video>
+        <canvas id="canvas"></canvas>
+        <button id="capture-image" onclick="captureImage()">Capture</button>
+        <a id="download-link" download="captured-image.png">Download Image</a>
+    </div>
+
+    <form id="video-upload-form" onsubmit="addVideo(event)">
+        <label for="video-link">YouTube Video Link:</label><br>
+        <input type="text" id="video-link" required><br>
+
+        <button type="submit" class="video-upload">Upload Video</button>
+        <p id="video-upload-status" class="status-message"></p>
+    </form>
+</section>
+
+<!-- Order Page -->
+<section id="order-page" class="container hidden">
+    <h2>Order Management Page</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Order Number</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price per Unit</th>
+                <th>Total Price</th>
+                <th>Image</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Year</th>
+            </tr>
+        </thead>
+        <tbody id="order-summary">
+            <!-- Dynamically added order rows will go here -->
+        </tbody>
+    </table>
+</section>
+
+<!-- Video Page -->
+<section id="video-page" class="container hidden">
+    <h2>Uploaded Videos</h2>
+    <div id="videos" class="videos">
+        <!-- Dynamically added video items will go here -->
+    </div>
+</section>
+
+<footer>
+    <p>Fruit & Veggie Store &copy; 2024</p>
+</footer>
+
+<script>
+    let products = [];
+    let orders = [];
+    let orderNumber = 1;
+
+    function showSection(sectionId) {
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('hidden');
+        });
+        document.getElementById(sectionId).classList.remove('hidden');
+    }
+
+    function updateProductStock() {
+        products.forEach(product => {
+            const productElement = document.querySelector(`[data-product-name="${product.name}"]`);
+            if (productElement) {
+                const quantityElement = productElement.querySelector('.status');
+                const buttonElement = productElement.querySelector('button');
+                const quantityInput = productElement.querySelector('.quantity-input');
+
+                if (product.quantity === 0) {
+                    quantityElement.textContent = 'Out of Stock';
+                    quantityElement.classList.add('out-of-stock');
+                    quantityElement.classList.remove('in-stock');
+                    buttonElement.disabled = true;
+                } else {
+                    quantityElement.textContent = 'In Stock';
+                    quantityElement.classList.add('in-stock');
+                    quantityElement.classList.remove('out-of-stock');
+                    buttonElement.disabled = false;
+                }
+            }
+        });
+    }
+
+    function addProduct(event) {
+        event.preventDefault();
+        const name = document.getElementById('product-name').value;
+        const price = parseFloat(document.getElementById('product-price').value);
+        const quantity = parseInt(document.getElementById('product-quantity').value);
+        const image = document.getElementById('product-image').files[0];
+        
+        products.push({ name, price, quantity, image });
+
+        const productDiv = document.createElement('div');
+        productDiv.className = 'product';
+        productDiv.setAttribute('data-product-name', name);
+
+        const imageURL = URL.createObjectURL(image);
+        productDiv.innerHTML = `
+            <img src="${imageURL}" alt="${name}">
+            <h3>${name}</h3>
+            <p>Price: $${price.toFixed(2)}</p>
+            <p class="status ${quantity > 0 ? 'in-stock' : 'out-of-stock'}">${quantity > 0 ? 'In Stock' : 'Out of Stock'}</p>
+            <button onclick="placeOrder('${name}')" ${quantity === 0 ? 'disabled' : ''}>Place Order</button>
+        `;
+        document.getElementById('products').appendChild(productDiv);
+
+        document.getElementById('upload-form').reset();
+        updateProductStock();
+    }
+
+    function addVideo(event) {
+        event.preventDefault();
+        const videoLink = document.getElementById('video-link').value;
+        
+        const videoDiv = document.createElement('div');
+        videoDiv.className = 'video';
+        
+        videoDiv.innerHTML = `
+            <iframe width="100%" height="200" src="${videoLink}" frameborder="0" allowfullscreen></iframe>
+        `;
+        document.getElementById('videos').appendChild(videoDiv);
+
+        document.getElementById('video-upload-form').reset();
+    }
+
+    function placeOrder(productName) {
+        const product = products.find(p => p.name === productName);
+        if (product && product.quantity > 0) {
+            orders.push({
+                orderNumber: orderNumber++,
+                productName: product.name,
+                quantity: 1,
+                pricePerUnit: product.price,
+                totalPrice: product.price,
+                image: product.image,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString(),
+                year: new Date().getFullYear()
+            });
+
+            product.quantity--;
+            updateProductStock();
+            updateOrderSummary();
+        }
+    }
+
+    function updateOrderSummary() {
+        const orderSummary = document.getElementById('order-summary');
+        orderSummary.innerHTML = '';
+
+        orders.forEach(order => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${order.orderNumber}</td>
+                <td>${order.productName}</td>
+                <td>${order.quantity}</td>
+                <td>$${order.pricePerUnit.toFixed(2)}</td>
+                <td>$${order.totalPrice.toFixed(2)}</td>
+                <td><img src="${URL.createObjectURL(order.image)}" alt="${order.productName}" width="100"></td>
+                <td>${order.date}</td>
+                <td>${order.time}</td>
+                <td>${order.year}</td>
+            `;
+            orderSummary.appendChild(row);
+        });
+    }
+
+    function startCamera() {
+        const camera = document.getElementById('camera');
+        const canvas = document.getElementById('canvas');
+        const downloadLink = document.getElementById('download-link');
+        const context = canvas.getContext('2d');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                camera.srcObject = stream;
+                camera.style.display = 'block';
+                canvas.width = camera.videoWidth;
+                canvas.height = camera.videoHeight;
+
+                document.getElementById('capture-image').onclick = () => {
+                    context.drawImage(camera, 0, 0, canvas.width, canvas.height);
+                    const dataURL = canvas.toDataURL('image/png');
+                    downloadLink.href = dataURL;
+                };
+            })
+            .catch(err => {
+                console.error('Error accessing the camera', err);
+            });
+    }
+
+    function captureImage() {
+        const camera = document.getElementById('camera');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        context.drawImage(camera, 0, 0, canvas.width, canvas.height);
+        const dataURL = canvas.toDataURL('image/png');
+        const downloadLink = document.getElementById('download-link');
+        downloadLink.href = dataURL;
+        downloadLink.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
